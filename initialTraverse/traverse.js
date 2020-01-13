@@ -11,7 +11,9 @@ const delay = seconds =>
 const init = async () => {
   const res = await axiosWithAuth().get("adv/init/");
   const startingRoom = res.data;
-  visited[startingRoom.room_id] = convertExitsIntoObject(startingRoom);
+  if (!visited[startingRoom.room_id]) {
+    visited[startingRoom.room_id] = convertExitsIntoObject(startingRoom);
+  }
   currentRoom = startingRoom;
   return currentRoom;
 };
@@ -71,21 +73,40 @@ const move = async (directionString, room) => {
 };
 
 const traverseMap = async () => {
+  //  Start off in a room (ex: room # 100)
   await init();
-  // While loop only runs if 'visited' graph's rooms have any "?" exits
-  // AND
-  // 'visited' graph's length is less than 500
+
+  //  While 'visited' graph's length is less than 500 AND 'visited' has any rooms containing "?"s for exits...
   while (
     checkIfBothTrue(
       !graphIsComplete(visited),
       Object.keys(visited).length < 500
     )
   ) {
+    //  If we haven't visited this room yet...
     if (!visited[currentRoom.room_id]) {
+      //  Add room to OUR graph with ?s for exits (100: { n: ?, s: ? } )
       visited[currentRoom.room_id] = convertExitsIntoObject(currentRoom);
     }
+
+    //  If room has been visited AND has unexplored exits...
+    if (
+      visited[currentRoom.room_id] &&
+      getUnexploredExits(visited[currentRoom.room_id]).length > 0
+    ) {
+      //  Pick an unexplored exit and move in that direction.
+      //  Update exits for new room and previous room (ex: we move 'n' to room 76, we can update our graph -> 100: { n: 76, s: ? }, 76: {s: 100, e: ?, n: ?})
+    }
+    //  Else if room has been visited AND all exits have been explored...
+    else if (
+      visited[currentRoom.room_id] &&
+      getUnexploredExits(visited[currentRoom.room_id]).length === 0
+    ) {
+      //  Do a bfs to find nearest room with unexplored exits and move to it
+    }
+
     previousRoom = currentRoom;
-    currentRoom = await move("n", currentRoom);
+    currentRoom = await move("n", getUnexploredExits(currentRoom)[0]);
     console.log("currentRoom: ", currentRoom);
     console.log("previousRoom: ", previousRoom);
   }
