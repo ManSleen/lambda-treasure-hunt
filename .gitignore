@@ -41,6 +41,9 @@ build/Release
 node_modules/
 jspm_packages/
 
+# Scratch folder aka fake localstorage
+scratch/
+
 # TypeScript v1 declaration files
 typings/
 
