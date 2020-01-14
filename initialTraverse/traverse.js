@@ -1,6 +1,14 @@
-const axiosWithAuth = require("../util/axiosWithAuth.js");
+const data = require("./data/test.json");
 
-const visited = {};
+const axiosWithAuth = require("../util/axiosWithAuth.js");
+if (typeof localStorage === "undefined" || localStorage === null) {
+  var LocalStorage = require("node-localstorage").LocalStorage;
+  localStorage = new LocalStorage("./scratch");
+}
+
+const visited = JSON.parse(localStorage.getItem("visited")) || {};
+
+// const visited = {};
 
 let currentRoom;
 let previousRoom;
@@ -14,6 +22,7 @@ const init = async () => {
   if (!visited[startingRoom.room_id]) {
     visited[startingRoom.room_id] = convertExitsIntoObject(startingRoom);
   }
+  // localStorage.setItem("visited", JSON.stringify(visited));
   currentRoom = startingRoom;
   return currentRoom;
 };
@@ -49,9 +58,32 @@ const convertExitsIntoObject = room => {
   return roomObj;
 };
 
+// Get current room from map, find out what room is on other side of the direction
+const findNextRoom = (currentRoomId, map, direction) => {
+  let nextRoom;
+  for (const exit in map[currentRoomId].exits) {
+    if (exit === direction) {
+      nextRoom = map[currentRoomId].exits[exit];
+      break;
+    }
+  }
+  return nextRoom;
+};
+
+// Find the direction connecting 2 rooms
+const findNextDirection = (currentRoomId, map, nextRoomId) => {
+  let nextDirection;
+  for (const exit in map[currentRoomId].exits) {
+    if (map[currentRoomId].exits[exit] === nextRoomId) {
+      nextDirection = exit;
+      break;
+    }
+  }
+  return nextDirection;
+};
+
 const getUnexploredExits = room => {
   let unexplored = [];
-  console.log("exits in unxplored++++++", room.exits);
   for (const exit in room.exits) {
     if (room.exits[exit] === "?") {
       unexplored.push(exit);
@@ -60,19 +92,39 @@ const getUnexploredExits = room => {
   return unexplored;
 };
 
-const move = async (directionString, room) => {
+const move = async (directionString, room, refMap) => {
   await delay(room.cooldown);
+  let nextRoom = findNextRoom(room.room_id, refMap, directionString);
+
+  let dirObj;
+
+  if (nextRoom) {
+    dirObj = {
+      direction: directionString,
+      next_room_id: `${nextRoom}`
+    };
+  } else {
+    dirObj = {
+      direction: directionString
+    };
+  }
+
   try {
     const direction = { direction: directionString };
-    const res = await axiosWithAuth().post("adv/move/", direction);
+    const res = await axiosWithAuth().post("adv/move/", dirObj);
     const newRoom = res.data;
     //  If we haven't visited this room yet...
     if (!visited[newRoom.room_id]) {
       //  Add room to OUR graph with ?s for exits (100: { n: ?, s: ? } )
       visited[newRoom.room_id] = convertExitsIntoObject(newRoom);
     }
-
-    return visited[newRoom.room_id];
+    const prev = visited[room.room_id];
+    const current = visited[newRoom.room_id];
+    current.cooldown = newRoom.cooldown;
+    console.log("prev in move: ", prev);
+    console.log("current in move: ", current);
+    // localStorage.setItem("visited", JSON.stringify(visited));
+    return [prev, current];
   } catch (error) {
     console.log(error);
   }
@@ -86,18 +138,32 @@ const bfs = (startingRoom, visited) => {
 
   while (q.length > 0) {
     let currentPath = q.pop();
-    console.log("currentPath in WHILE: ", currentPath);
+    // console.log("currentPath in WHILE: ", currentPath);
     let lastVertex = currentPath[currentPath.length - 1];
-    console.log("lastVertex in WHILE: ", lastVertex);
-    console.log("visited[lastVertex.room_id]: ", visited[lastVertex.room_id]);
+    // console.log("lastVertex in WHILE: ", lastVertex);
+    // console.log("visited[lastVertex.room_id]: ", visited[lastVertex.room_id]);
     if (!visitedSet.has(lastVertex)) {
       if (Object.values(visited[lastVertex.room_id].exits).includes("?")) {
-        console.log("path to room with unexplored exits!: ", currentPath);
-        return currentPath;
+        // console.log("path to room with unexplored exits!: ", currentPath);
+        // Convert path of rooms to directions that we can follow to get there
+        let directionsPath = [];
+        for (let i = 0; i < currentPath.length - 1; i++) {
+          let currentRoom = currentPath[i];
+          let nextRoom = currentPath[i + 1];
+          directionsPath.push(
+            findNextDirection(currentRoom.room_id, visited, nextRoom.room_id)
+          );
+        }
+        // console.log("directionsPath: ", directionsPath);
+        return directionsPath;
       }
       visitedSet.add(lastVertex);
       for (const neighbor in visited[lastVertex.room_id].exits) {
-        const newPath = [...currentPath, neighbor];
+        const newPath = [
+          ...currentPath,
+          visited[visited[lastVertex.room_id].exits[neighbor]]
+        ];
+        console.log("newPath: ", newPath);
         q.unshift(newPath);
       }
     }
@@ -127,9 +193,14 @@ const traverseMap = async () => {
         visited[currentRoom.room_id]
       )[0];
       //  Set previousRoom to currentRoom
-      previousRoom = visited[currentRoom.room_id];
-      //  Then move to a new room and set currentRoom to it
-      currentRoom = await move(unexploredDirection, currentRoom);
+      // previousRoom = visited[currentRoom.room_id];
+      // //  Then move to a new room and set currentRoom to it
+      // currentRoom = await move(unexploredDirection, currentRoom);
+      [previousRoom, currentRoom] = await move(
+        unexploredDirection,
+        currentRoom,
+        data
+      );
 
       // Update exits for new room and previous room (ex: we move 'n' to room 76, so we can update our graph -> 100: { n: 76, s: ? }, 76: {s: 100, e: ?, n: ?})
       const updatedPreviousRoom = { ...previousRoom };
@@ -142,6 +213,7 @@ const traverseMap = async () => {
       console.log("previous room: ", previousRoom);
       visited[currentRoom.room_id] = updatedCurrentRoom;
       visited[previousRoom.room_id] = updatedPreviousRoom;
+      // localStorage.setItem("visited", JSON.stringify(visited));
     }
     //  Else If room has been visited AND all exits have been explored...
     else if (
@@ -149,8 +221,16 @@ const traverseMap = async () => {
       getUnexploredExits(visited[currentRoom.room_id]).length === 0
     ) {
       //  Do a bfs to find nearest room with unexplored exits and move to it
-      bfs(currentRoom, visited);
+      let path = bfs(currentRoom, visited);
+      console.log("path: ", path);
+      let nextDirection = path[0];
+      [previousRoom, currentRoom] = await move(
+        nextDirection,
+        currentRoom,
+        data
+      );
     }
+    localStorage.setItem("visited", JSON.stringify(visited));
 
     console.log("visited: ", visited);
   }
