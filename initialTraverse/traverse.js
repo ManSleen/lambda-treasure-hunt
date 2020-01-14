@@ -49,9 +49,32 @@ const convertExitsIntoObject = room => {
   return roomObj;
 };
 
+// Get current room from map, find out what room is on other side of the direction
+const findNextRoom = (currentRoomId, map, direction) => {
+  let nextRoom;
+  for (const exit in map[currentRoomId].exits) {
+    if (exit === direction) {
+      nextRoom = map[currentRoomId].exits[exit];
+      break;
+    }
+  }
+  return nextRoom;
+};
+
+// Find the direction connecting 2 rooms
+const findNextDirection = (currentRoomId, map, nextRoomId) => {
+  let nextDirection;
+  for (const exit in map[currentRoomId].exits) {
+    if (map[currentRoomId].exits[exit] === nextRoomId) {
+      nextDirection = exit;
+      break;
+    }
+  }
+  return nextDirection;
+};
+
 const getUnexploredExits = room => {
   let unexplored = [];
-  console.log("exits in unxplored++++++", room.exits);
   for (const exit in room.exits) {
     if (room.exits[exit] === "?") {
       unexplored.push(exit);
@@ -86,18 +109,32 @@ const bfs = (startingRoom, visited) => {
 
   while (q.length > 0) {
     let currentPath = q.pop();
-    console.log("currentPath in WHILE: ", currentPath);
+    // console.log("currentPath in WHILE: ", currentPath);
     let lastVertex = currentPath[currentPath.length - 1];
-    console.log("lastVertex in WHILE: ", lastVertex);
-    console.log("visited[lastVertex.room_id]: ", visited[lastVertex.room_id]);
+    // console.log("lastVertex in WHILE: ", lastVertex);
+    // console.log("visited[lastVertex.room_id]: ", visited[lastVertex.room_id]);
     if (!visitedSet.has(lastVertex)) {
       if (Object.values(visited[lastVertex.room_id].exits).includes("?")) {
-        console.log("path to room with unexplored exits!: ", currentPath);
-        return currentPath;
+        // console.log("path to room with unexplored exits!: ", currentPath);
+        // Convert path of rooms to directions that we can follow to get there
+        let directionsPath = [];
+        for (let i = 0; i < currentPath.length - 1; i++) {
+          let currentRoom = currentPath[i];
+          let nextRoom = currentPath[i + 1];
+          directionsPath.push(
+            findNextDirection(currentRoom.room_id, visited, nextRoom.room_id)
+          );
+        }
+        // console.log("directionsPath: ", directionsPath);
+        return directionsPath;
       }
       visitedSet.add(lastVertex);
       for (const neighbor in visited[lastVertex.room_id].exits) {
-        const newPath = [...currentPath, neighbor];
+        const newPath = [
+          ...currentPath,
+          visited[visited[lastVertex.room_id].exits[neighbor]]
+        ];
+        console.log("newPath: ", newPath);
         q.unshift(newPath);
       }
     }
@@ -149,7 +186,19 @@ const traverseMap = async () => {
       getUnexploredExits(visited[currentRoom.room_id]).length === 0
     ) {
       //  Do a bfs to find nearest room with unexplored exits and move to it
-      bfs(currentRoom, visited);
+      let path = bfs(currentRoom, visited);
+      console.log("path: ", path);
+      //  Set previousRoom to currentRoom
+      previousRoom = visited[currentRoom.room_id];
+      //  Then move to a new room and set currentRoom to it
+      currentRoom = await move("s", currentRoom);
+
+      // path.forEach(async dir => {
+      //   //  Set previousRoom to currentRoom
+      //   previousRoom = visited[currentRoom.room_id];
+      //   //  Then move to a new room and set currentRoom to it
+      //   currentRoom = await move(dir, currentRoom);
+      // });
     }
 
     console.log("visited: ", visited);
