@@ -1,0 +1,24 @@
+{
+  "name": "lambda-treasure-hunt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^0.19.1",
+    "node-localstorage": "^2.1.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ManSleen/lambda-treasure-hunt.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ManSleen/lambda-treasure-hunt/issues"
+  },
+  "homepage": "https://github.com/ManSleen/lambda-treasure-hunt#readme"
+}

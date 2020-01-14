@@ -1,6 +1,14 @@
+const data = require("./data/test.json");
+
 const axiosWithAuth = require("../util/axiosWithAuth.js");
+if (typeof localStorage === "undefined" || localStorage === null) {
+  var LocalStorage = require("node-localstorage").LocalStorage;
+  localStorage = new LocalStorage("./scratch");
+}
 
 const visited = JSON.parse(localStorage.getItem("visited")) || {};
+
+// const visited = {};
 
 let currentRoom;
 let previousRoom;
@@ -14,7 +22,7 @@ const init = async () => {
   if (!visited[startingRoom.room_id]) {
     visited[startingRoom.room_id] = convertExitsIntoObject(startingRoom);
   }
-  localStorage.setItem("visited", JSON.stringify(visited));
+  // localStorage.setItem("visited", JSON.stringify(visited));
   currentRoom = startingRoom;
   return currentRoom;
 };
@@ -84,11 +92,26 @@ const getUnexploredExits = room => {
   return unexplored;
 };
 
-const move = async (directionString, room) => {
+const move = async (directionString, room, refMap) => {
   await delay(room.cooldown);
+  let nextRoom = findNextRoom(room.room_id, refMap, directionString);
+
+  let dirObj;
+
+  if (nextRoom) {
+    dirObj = {
+      direction: directionString,
+      next_room_id: `${nextRoom}`
+    };
+  } else {
+    dirObj = {
+      direction: directionString
+    };
+  }
+
   try {
     const direction = { direction: directionString };
-    const res = await axiosWithAuth().post("adv/move/", direction);
+    const res = await axiosWithAuth().post("adv/move/", dirObj);
     const newRoom = res.data;
     //  If we haven't visited this room yet...
     if (!visited[newRoom.room_id]) {
@@ -97,7 +120,10 @@ const move = async (directionString, room) => {
     }
     const prev = visited[room.room_id];
     const current = visited[newRoom.room_id];
-    localStorage.setItem("visited", JSON.stringify(visited));
+    current.cooldown = newRoom.cooldown;
+    console.log("prev in move: ", prev);
+    console.log("current in move: ", current);
+    // localStorage.setItem("visited", JSON.stringify(visited));
     return [prev, current];
   } catch (error) {
     console.log(error);
@@ -172,7 +198,8 @@ const traverseMap = async () => {
       // currentRoom = await move(unexploredDirection, currentRoom);
       [previousRoom, currentRoom] = await move(
         unexploredDirection,
-        currentRoom
+        currentRoom,
+        data
       );
 
       // Update exits for new room and previous room (ex: we move 'n' to room 76, so we can update our graph -> 100: { n: 76, s: ? }, 76: {s: 100, e: ?, n: ?})
@@ -186,7 +213,7 @@ const traverseMap = async () => {
       console.log("previous room: ", previousRoom);
       visited[currentRoom.room_id] = updatedCurrentRoom;
       visited[previousRoom.room_id] = updatedPreviousRoom;
-      localStorage.setItem("visited", JSON.stringify(visited));
+      // localStorage.setItem("visited", JSON.stringify(visited));
     }
     //  Else If room has been visited AND all exits have been explored...
     else if (
@@ -197,8 +224,13 @@ const traverseMap = async () => {
       let path = bfs(currentRoom, visited);
       console.log("path: ", path);
       let nextDirection = path[0];
-      [previousRoom, currentRoom] = await move(nextDirection, currentRoom);
+      [previousRoom, currentRoom] = await move(
+        nextDirection,
+        currentRoom,
+        data
+      );
     }
+    localStorage.setItem("visited", JSON.stringify(visited));
 
     console.log("visited: ", visited);
   }
