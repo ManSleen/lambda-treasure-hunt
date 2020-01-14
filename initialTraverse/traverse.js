@@ -78,6 +78,32 @@ const move = async (directionString, room) => {
   }
 };
 
+const bfs = (startingRoom, visited) => {
+  const q = [];
+  q.unshift([startingRoom]);
+
+  const visitedSet = new Set();
+
+  while (q.length > 0) {
+    let currentPath = q.pop();
+    console.log("currentPath in WHILE: ", currentPath);
+    let lastVertex = currentPath[currentPath.length - 1];
+    console.log("lastVertex in WHILE: ", lastVertex);
+    console.log("visited[lastVertex.room_id]: ", visited[lastVertex.room_id]);
+    if (!visitedSet.has(lastVertex)) {
+      if (Object.values(visited[lastVertex.room_id].exits).includes("?")) {
+        console.log("path to room with unexplored exits!: ", currentPath);
+        return currentPath;
+      }
+      visitedSet.add(lastVertex);
+      for (const neighbor in visited[lastVertex.room_id].exits) {
+        const newPath = [...currentPath, neighbor];
+        q.unshift(newPath);
+      }
+    }
+  }
+};
+
 const traverseMap = async () => {
   const opposites = { n: "s", s: "n", e: "w", w: "e" };
 
@@ -123,6 +149,7 @@ const traverseMap = async () => {
       getUnexploredExits(visited[currentRoom.room_id]).length === 0
     ) {
       //  Do a bfs to find nearest room with unexplored exits and move to it
+      bfs(currentRoom, visited);
     }
 
     console.log("visited: ", visited);
@@ -130,3 +157,39 @@ const traverseMap = async () => {
 };
 
 traverseMap();
+
+/*
+    def bfs(self, starting_vertex, destination_vertex):
+        """
+        Return a list containing the shortest path from
+        starting_vertex to destination_vertex in
+        breath-first order.
+        """
+        # Create an empty queue and enqueue A PATH TO the starting vertex ID
+        queue = Queue()
+        queue.enqueue([starting_vertex])
+        # Create a Set to store visited vertices
+        visited = set()
+        # While the queue is not empty:
+        while queue.size() > 0:
+            # Dequeue the first PATH
+            current_path = queue.dequeue()
+            # print("current path: ", current_path)
+            # Grab the last vertex from the PATH
+            last_vertex = current_path[-1]
+            # If that vertex has not been visited...
+            if last_vertex not in visited:
+                # Check if it's the target
+                if last_vertex == destination_vertex:
+                    return current_path
+                    # If so, return path
+                # Mark it as visited
+                visited.add(last_vertex)
+                # Then add A PATH TO its neighbors to the back of the queue
+                for neighbor in self.get_neighbors(last_vertex):
+                    new_path = [*current_path, neighbor]
+                    queue.enqueue(new_path)
+                    # Copy the path
+                    # Append the neighbor to the back
+
+*/
