@@ -1,14 +1,13 @@
-const data = require("./data/test.json");
+const map = require("./data/map.json");
 
 const axiosWithAuth = require("../util/axiosWithAuth.js");
+
 if (typeof localStorage === "undefined" || localStorage === null) {
   var LocalStorage = require("node-localstorage").LocalStorage;
   localStorage = new LocalStorage("./scratch");
 }
 
 const visited = JSON.parse(localStorage.getItem("visited")) || {};
-
-// const visited = {};
 
 let currentRoom;
 let previousRoom;
@@ -22,11 +21,11 @@ const init = async () => {
   if (!visited[startingRoom.room_id]) {
     visited[startingRoom.room_id] = convertExitsIntoObject(startingRoom);
   }
-  // localStorage.setItem("visited", JSON.stringify(visited));
   currentRoom = startingRoom;
   return currentRoom;
 };
 
+// Returns false if there are any exits with "?"s in the map
 const graphIsComplete = map => {
   let status = true;
   for (const room in map) {
@@ -58,7 +57,7 @@ const convertExitsIntoObject = room => {
   return roomObj;
 };
 
-// Get current room from map, find out what room is on other side of the direction
+// Get current room from map, find out what room is on other side of the exit
 const findNextRoom = (currentRoomId, map, direction) => {
   let nextRoom;
   if (map[currentRoomId]) {
@@ -72,7 +71,7 @@ const findNextRoom = (currentRoomId, map, direction) => {
   return nextRoom;
 };
 
-// Find the direction connecting 2 rooms
+// Find the direction/exit connecting 2 rooms together
 const findNextDirection = (currentRoomId, map, nextRoomId) => {
   let nextDirection;
   for (const exit in map[currentRoomId].exits) {
@@ -112,7 +111,6 @@ const move = async (directionString, room, refMap) => {
   }
 
   try {
-    const direction = { direction: directionString };
     const res = await axiosWithAuth().post("adv/move/", dirObj);
     const newRoom = res.data;
     //  If we haven't visited this room yet...
@@ -123,15 +121,13 @@ const move = async (directionString, room, refMap) => {
     const prev = visited[room.room_id];
     const current = visited[newRoom.room_id];
     current.cooldown = newRoom.cooldown;
-    console.log("prev in move: ", prev);
-    console.log("current in move: ", current);
-    // localStorage.setItem("visited", JSON.stringify(visited));
     return [prev, current];
   } catch (error) {
     console.log(error);
   }
 };
 
+// Returns path to closest room with unexplored exits
 const bfs = (startingRoom, visited) => {
   const q = [];
   q.unshift([startingRoom]);
@@ -140,13 +136,9 @@ const bfs = (startingRoom, visited) => {
 
   while (q.length > 0) {
     let currentPath = q.pop();
-    // console.log("currentPath in WHILE: ", currentPath);
     let lastVertex = currentPath[currentPath.length - 1];
-    // console.log("lastVertex in WHILE: ", lastVertex);
-    // console.log("visited[lastVertex.room_id]: ", visited[lastVertex.room_id]);
     if (!visitedSet.has(lastVertex)) {
       if (Object.values(visited[lastVertex.room_id].exits).includes("?")) {
-        // console.log("path to room with unexplored exits!: ", currentPath);
         // Convert path of rooms to directions that we can follow to get there
         let directionsPath = [];
         for (let i = 0; i < currentPath.length - 1; i++) {
@@ -156,7 +148,6 @@ const bfs = (startingRoom, visited) => {
             findNextDirection(currentRoom.room_id, visited, nextRoom.room_id)
           );
         }
-        // console.log("directionsPath: ", directionsPath);
         return directionsPath;
       }
       visitedSet.add(lastVertex);
@@ -165,7 +156,6 @@ const bfs = (startingRoom, visited) => {
           ...currentPath,
           visited[visited[lastVertex.room_id].exits[neighbor]]
         ];
-        console.log("newPath: ", newPath);
         q.unshift(newPath);
       }
     }
@@ -194,14 +184,11 @@ const traverseMap = async () => {
       const unexploredDirection = getUnexploredExits(
         visited[currentRoom.room_id]
       )[0];
-      //  Set previousRoom to currentRoom
-      // previousRoom = visited[currentRoom.room_id];
-      // //  Then move to a new room and set currentRoom to it
-      // currentRoom = await move(unexploredDirection, currentRoom);
+      //  Set previousRoom to currentRoom, then move to a new room and set currentRoom to that
       [previousRoom, currentRoom] = await move(
         unexploredDirection,
         currentRoom,
-        data
+        map
       );
 
       // Update exits for new room and previous room (ex: we move 'n' to room 76, so we can update our graph -> 100: { n: 76, s: ? }, 76: {s: 100, e: ?, n: ?})
@@ -211,11 +198,8 @@ const traverseMap = async () => {
       const updatedCurrentRoom = { ...currentRoom };
       updatedCurrentRoom.exits[opposites[unexploredDirection]] =
         previousRoom.room_id;
-      console.log("current room: ", currentRoom);
-      console.log("previous room: ", previousRoom);
       visited[currentRoom.room_id] = updatedCurrentRoom;
       visited[previousRoom.room_id] = updatedPreviousRoom;
-      // localStorage.setItem("visited", JSON.stringify(visited));
     }
     //  Else If room has been visited AND all exits have been explored...
     else if (
@@ -224,54 +208,11 @@ const traverseMap = async () => {
     ) {
       //  Do a bfs to find nearest room with unexplored exits and move to it
       let path = bfs(currentRoom, visited);
-      console.log("path: ", path);
       let nextDirection = path[0];
-      [previousRoom, currentRoom] = await move(
-        nextDirection,
-        currentRoom,
-        data
-      );
+      [previousRoom, currentRoom] = await move(nextDirection, currentRoom, map);
     }
     localStorage.setItem("visited", JSON.stringify(visited));
-
-    console.log("visited: ", visited);
   }
 };
 
 traverseMap();
-
-/*
-    def bfs(self, starting_vertex, destination_vertex):
-        """
-        Return a list containing the shortest path from
-        starting_vertex to destination_vertex in
-        breath-first order.
-        """
-        # Create an empty queue and enqueue A PATH TO the starting vertex ID
-        queue = Queue()
-        queue.enqueue([starting_vertex])
-        # Create a Set to store visited vertices
-        visited = set()
-        # While the queue is not empty:
-        while queue.size() > 0:
-            # Dequeue the first PATH
-            current_path = queue.dequeue()
-            # print("current path: ", current_path)
-            # Grab the last vertex from the PATH
-            last_vertex = current_path[-1]
-            # If that vertex has not been visited...
-            if last_vertex not in visited:
-                # Check if it's the target
-                if last_vertex == destination_vertex:
-                    return current_path
-                    # If so, return path
-                # Mark it as visited
-                visited.add(last_vertex)
-                # Then add A PATH TO its neighbors to the back of the queue
-                for neighbor in self.get_neighbors(last_vertex):
-                    new_path = [*current_path, neighbor]
-                    queue.enqueue(new_path)
-                    # Copy the path
-                    # Append the neighbor to the back
-
-*/
