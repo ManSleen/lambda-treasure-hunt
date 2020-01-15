@@ -61,10 +61,12 @@ const convertExitsIntoObject = room => {
 // Get current room from map, find out what room is on other side of the direction
 const findNextRoom = (currentRoomId, map, direction) => {
   let nextRoom;
-  for (const exit in map[currentRoomId].exits) {
-    if (exit === direction) {
-      nextRoom = map[currentRoomId].exits[exit];
-      break;
+  if (map[currentRoomId]) {
+    for (const exit in map[currentRoomId].exits) {
+      if (exit === direction) {
+        nextRoom = map[currentRoomId].exits[exit];
+        break;
+      }
     }
   }
   return nextRoom;
