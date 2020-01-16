@@ -128,7 +128,7 @@ const move = async (directionString, room, refMap) => {
 };
 
 // Returns path to closest room with unexplored exits
-const bfs = (startingRoom, visited) => {
+const findClosestUnexploredRoom = (startingRoom, visited) => {
   const q = [];
   q.unshift([startingRoom]);
 
@@ -207,7 +207,7 @@ const traverseMap = async () => {
       getUnexploredExits(visited[currentRoom.room_id]).length === 0
     ) {
       //  Do a bfs to find nearest room with unexplored exits and move to it
-      let path = bfs(currentRoom, visited);
+      let path = findClosestUnexploredRoom(currentRoom, visited);
       let nextDirection = path[0];
       [previousRoom, currentRoom] = await move(nextDirection, currentRoom, map);
     }
