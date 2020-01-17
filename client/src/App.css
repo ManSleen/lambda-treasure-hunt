@@ -13,17 +13,6 @@
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
 .App-link {
   color: #61dafb;
 }
@@ -35,4 +24,23 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.middle {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+h2 {
+  font-weight: 900;
+  font-size: 30px;
+  color: #e8e8e8;
+  text-transform: uppercase;
+  margin: 0;
+  padding: 0;
+}
+
+hr {
+  border: 2px solid #2a2355ff;
+  margin: 15px 0;
 }

@@ -10,8 +10,10 @@ function App() {
   return (
     <div className="App">
       <TopBar />
-      <SideBar />
-      <MapView />
+      <div className="middle">
+        <SideBar />
+        <MapView />
+      </div>
       <BottomBar />
     </div>
   );

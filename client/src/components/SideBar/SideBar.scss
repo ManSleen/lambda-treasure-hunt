@@ -2,39 +2,35 @@
   width: 310px;
   height: 80vh;
   background: #0f0f11;
-  padding: 0 23px;
   text-align: left;
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
+  .stat-container {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    width: 100%;
+    margin: 6px 0;
+    .stat {
+      font-weight: 500;
+      font-size: 18px;
+      color: #e8e8e8;
+    }
+    .value {
+      font-weight: 900;
+      font-size: 20px;
+      color: #e8e8e8;
+    }
+  }
 
   .player-info-container {
-    padding: 31px 0;
-    hr {
-      border: 2px solid #2a235550;
-      margin: 25px 0;
-    }
-    .stat-container {
-      display: flex;
-      flex-flow: row nowrap;
-      justify-content: space-between;
-      width: 100%;
-      margin: 6px 0;
-      .stat {
-        font-weight: 500;
-        font-size: 18px;
-        color: #e8e8e8;
-      }
-      .value {
-        font-weight: 900;
-        font-size: 20px;
-        color: #e8e8e8;
-      }
-    }
+    padding: 23px;
+    margin-bottom: 23px;
   }
   .wearables-container {
     height: 80px;
-    margin: 0 -23px 22px -23px;
+    margin-bottom: 22px;
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
@@ -51,9 +47,32 @@
         font-weight: 500;
         font-size: 11px;
         line-height: 12px;
-
         color: #e8e8e8;
       }
+    }
+  }
+  .room-info-container {
+    padding: 23px;
+    background: #3b307a;
+    height: 100%;
+    h3 {
+      font-weight: 900;
+      font-size: 18px;
+      line-height: 21px;
+      color: #e8e8e8;
+      margin: 0 0 10px 0;
+      padding: 0;
+    }
+    p {
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 19px;
+      color: #e8e8e8;
+      margin: 0;
+      padding: 0;
+    }
+    .room-title {
+      margin-bottom: 18px;
     }
   }
 }
