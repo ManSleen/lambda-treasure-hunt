@@ -22,6 +22,9 @@ lib-cov
 coverage
 *.lcov
 
+# testing
+/coverage
+
 # nyc test coverage
 .nyc_output
 
@@ -40,6 +43,9 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+/.pnp
+.pnp.js
+
 
 # Scratch folder aka fake localstorage
 scratch/
@@ -105,3 +111,14 @@ dist
 
 # TernJS port file
 .tern-port
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
