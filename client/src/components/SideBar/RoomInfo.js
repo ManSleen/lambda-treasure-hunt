@@ -33,6 +33,7 @@ const RoomInfo = () => {
           <span className="value">0</span>
         </div>
       </div>
+      <hr />
       <RoomItems />
     </div>
   );
