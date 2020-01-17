@@ -1,0 +1,39 @@
+.topbar {
+  width: 100%;
+  background: #212027;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+  .topbar-container {
+    padding: 0 30px;
+    height: 86px;
+    margin: 0 auto;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    .topbar-player-name {
+      h2 {
+        font-weight: 900;
+        font-size: 30px;
+        color: #e8e8e8;
+        text-transform: uppercase;
+      }
+    }
+    .topbar-title {
+      h1 {
+        font-weight: 900;
+        font-size: 24px;
+        text-align: center;
+        color: #e8e8e8;
+      }
+    }
+    .topbar-gold {
+      span {
+        font-weight: 900;
+        font-size: 40px;
+        text-align: right;
+        color: #06d01a;
+        margin-right: 10px;
+      }
+    }
+  }
+}
