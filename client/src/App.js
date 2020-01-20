@@ -59,7 +59,7 @@ function App() {
 
       <TopBar player={playerInfo} />
       <div className="middle">
-        <SideBar />
+        <SideBar player={playerInfo} room={roomInfo} />
         <MapView />
       </div>
       <BottomBar />

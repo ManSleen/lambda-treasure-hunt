@@ -1,24 +1,28 @@
 import React from "react";
 
-const PlayerInfo = () => {
+const PlayerInfo = ({ player }) => {
   return (
     <div className="player-info-container">
       <div className="stat-container">
         <div className="stat">Strength</div>
         <div>
-          <span className="value">20</span>
+          <span className="value">
+            {player ? player.strength : "loading..."}
+          </span>
         </div>
       </div>
       <div className="stat-container">
         <div className="stat">Speed</div>
         <div>
-          <span className="value">100</span>
+          <span className="value">{player ? player.speed : "loading..."}</span>
         </div>
       </div>
       <div className="stat-container">
         <div className="stat">Encumbrance</div>
         <div>
-          <span className="value">10</span>
+          <span className="value">
+            {player ? player.encumbrance : "loading..."}
+          </span>
         </div>
       </div>
       <hr />

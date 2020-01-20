@@ -1,10 +1,10 @@
 import React from "react";
 
-const Item = () => {
+const Item = ({ item }) => {
   return (
     <div className="item-container">
       <div>
-        <p>tiny treasure</p>
+        <p>{item && item}</p>
       </div>
       <div>
         <button>take</button>
