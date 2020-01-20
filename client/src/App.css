@@ -53,3 +53,12 @@ h3 {
   margin: 0 0 5px 0;
   padding: 0;
 }
+
+a {
+  text-decoration: none;
+  color: #e8e8e8;
+}
+a img {
+  display: block;
+  margin: 0 auto;
+}
