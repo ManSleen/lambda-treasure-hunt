@@ -1,7 +1,8 @@
 import React from "react";
+import "./MapView.scss";
 
 const MapView = () => {
-  return <div>Map View</div>;
+  return <div className="map-view-container">Map View</div>;
 };
 
 export default MapView;
