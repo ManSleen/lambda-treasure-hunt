@@ -1,0 +1,25 @@
+.bottom-bar-container {
+  background-color: #0f0f11;
+  height: calc(100vh - (85vh + 79px));
+  padding: 20px 50px;
+  color: #e8e8e8;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  .action-button {
+    font-weight: 900;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: center;
+    width: 96px;
+    color: #d6d3d3;
+    text-transform: uppercase;
+    display: flex;
+    flex-flow: column nowrap;
+    margin-right: 50px;
+    img {
+      margin-bottom: 8px;
+    }
+  }
+}

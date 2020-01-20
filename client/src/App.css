@@ -44,3 +44,32 @@ hr {
   border: 2px solid #2a2355ff;
   margin: 15px 0;
 }
+
+h3 {
+  font-weight: 900;
+  font-size: 17px;
+  line-height: 21px;
+  color: #e8e8e8;
+  margin: 0 0 5px 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  color: #e8e8e8;
+}
+a img {
+  display: block;
+  margin: 0 auto;
+}
+
+a:hover {
+  transform: scale(1.1);
+}
+
+.loader-container {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.767);
+}

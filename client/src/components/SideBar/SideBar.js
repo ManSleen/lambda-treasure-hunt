@@ -5,12 +5,12 @@ import PlayerInfo from "./PlayerInfo";
 import Wearables from "./Wearables";
 import RoomInfo from "./RoomInfo";
 
-const SideBar = () => {
+const SideBar = ({ player, room }) => {
   return (
     <div className="sidebar">
-      <PlayerInfo />
-      <Wearables />
-      <RoomInfo />
+      <PlayerInfo player={player} />
+      <Wearables player={player} />
+      <RoomInfo room={room} />
     </div>
   );
 };

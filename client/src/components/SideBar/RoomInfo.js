@@ -1,40 +1,39 @@
 import React from "react";
 import RoomItems from "./RoomItems";
 
-const RoomInfo = () => {
+const RoomInfo = ({ room }) => {
   return (
     <div className="room-info-container">
       <div className="room-title">
-        <h2>Room 301</h2>
+        <h2>{room ? `Room ${room.room_id}` : "loading..."}</h2>
       </div>
       <div className="room-description">
-        <h3>A Misty Room</h3>
-        <p>
-          You are standing on grass and surrounded by a dense mist. You can
-          barely make out the exits in any direction.
-        </p>
+        <h3>{room ? room.title : "loading..."}</h3>
+        <p>{room ? room.description : "loading..."}</p>
       </div>
       <hr />
       <div className="stat-container">
         <div className="stat">Coordinates</div>
         <div>
-          <span className="value">(63,54)</span>
+          <span className="value">
+            {room ? room.coordinates : "loading..."}
+          </span>
         </div>
       </div>
       <div className="stat-container">
         <div className="stat">Terrain</div>
         <div>
-          <span className="value">NORMAL</span>
+          <span className="value">{room ? room.terrain : "loading..."}</span>
         </div>
       </div>
       <div className="stat-container">
         <div className="stat">Elevation</div>
         <div>
-          <span className="value">0</span>
+          <span className="value">{room ? room.elevation : "loading..."}</span>
         </div>
       </div>
       <hr />
-      <RoomItems />
+      <RoomItems room={room} />
     </div>
   );
 };
