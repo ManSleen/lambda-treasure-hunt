@@ -5,7 +5,7 @@ const RoomInfo = () => {
   return (
     <div className="room-info-container">
       <div className="room-title">
-        <h2>Room 301</h2>
+        <h2>Room 302</h2>
       </div>
       <div className="room-description">
         <h3>A Misty Room</h3>
