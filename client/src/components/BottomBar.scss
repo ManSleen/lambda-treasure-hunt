@@ -1,12 +1,16 @@
 .bottom-bar-container {
   background-color: #0f0f11;
-  height: calc(100vh - (85vh + 79px));
+  height: 80px;
   padding: 20px 50px;
   color: #e8e8e8;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: flex-start;
+  justify-content: space-around;
   align-items: center;
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  z-index: 9999;
   .action-button {
     font-weight: 900;
     font-size: 16px;
