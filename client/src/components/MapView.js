@@ -18,23 +18,66 @@ const generateMap = graph => {
 
     rooms.push(
       <div
-        style={{
-          backgroundColor: `${
-            graph[room].title.includes("A misty room")
-              ? "aqua"
-              : graph[room].title.includes("Mt. Holloway")
-              ? "firebrick"
-              : graph[room].title.includes("A Dark Cave")
-              ? "darkgrey"
-              : "coral"
-          }`,
-
-          bottom: `${(y - 45) * 60}px`,
-          left: `${(x - 49) * 60}px`
-        }}
         className="map-child"
+        style={{
+          bottom: `${(y - 45) * 65}px`,
+          left: `${(x - 45) * 65}px`
+        }}
       >
-        {map[room].room_id}
+        <div className="toprow">
+          <div
+            className="top-link"
+            style={{
+              backgroundColor: `${graph[room].exits["n"] >= 0 ? "#FFB68D" : 0}`
+            }}
+          >
+            {" "}
+          </div>
+        </div>
+        <div className="middlerow">
+          <div
+            className="left-link"
+            style={{
+              backgroundColor: `${graph[room].exits["w"] >= 0 ? "#FFB68D" : 0}`
+            }}
+          >
+            {" "}
+          </div>
+          <div
+            className="content"
+            style={{
+              backgroundColor: `${
+                graph[room].title.includes("A misty room")
+                  ? "coral"
+                  : graph[room].title.includes("Mt. Holloway")
+                  ? "firebrick"
+                  : graph[room].title.includes("A Dark Cave")
+                  ? "darkgrey"
+                  : "#FFD233"
+              }`
+            }}
+          >
+            {map[room].room_id}
+          </div>
+          <div
+            className="right-link"
+            style={{
+              backgroundColor: `${graph[room].exits["e"] >= 0 ? "#FFB68D" : 0}`
+            }}
+          >
+            {" "}
+          </div>
+        </div>
+        <div className="bottomrow">
+          <div
+            className="bottom-link"
+            style={{
+              backgroundColor: `${graph[room].exits["s"] >= 0 ? "#FFB68D" : 0}`
+            }}
+          >
+            {" "}
+          </div>
+        </div>
       </div>
     );
   }
