@@ -6,6 +6,9 @@
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
+  position: fixed;
+  top: 86px;
+  z-index: 9999;
   .stat-container {
     display: flex;
     flex-flow: row nowrap;

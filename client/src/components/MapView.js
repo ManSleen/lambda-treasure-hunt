@@ -19,11 +19,18 @@ const generateMap = graph => {
     rooms.push(
       <div
         style={{
-          backgroundColor: "coral",
-          width: "40px",
-          height: "40px",
-          top: `${(y - 45) * 60}px`,
-          left: `${(x - 48) * 60}px`
+          backgroundColor: `${
+            graph[room].title.includes("A misty room")
+              ? "aqua"
+              : graph[room].title.includes("Mt. Holloway")
+              ? "firebrick"
+              : graph[room].title.includes("A Dark Cave")
+              ? "darkgrey"
+              : "coral"
+          }`,
+
+          bottom: `${(y - 45) * 60}px`,
+          left: `${(x - 49) * 60}px`
         }}
         className="map-child"
       >
