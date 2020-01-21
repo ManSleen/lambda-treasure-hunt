@@ -22,8 +22,8 @@ const generateMap = graph => {
           backgroundColor: "coral",
           width: "40px",
           height: "40px",
-          top: `${y * 60}px`,
-          left: `${x * 60}px`
+          top: `${(y - 45) * 60}px`,
+          left: `${(x - 48) * 60}px`
         }}
         className="map-child"
       >

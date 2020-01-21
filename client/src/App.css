@@ -72,4 +72,5 @@ a:hover {
   height: 100vh;
   position: absolute;
   background-color: rgba(0, 0, 0, 0.767);
+  z-index: 99999;
 }
