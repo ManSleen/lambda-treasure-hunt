@@ -8,8 +8,8 @@ const MapView = ({ room }) => {
   const generateMap = graph => {
     const rooms = [];
 
-    for (const room in graph) {
-      const currentRoom = graph[room];
+    for (const vertex in graph) {
+      const currentRoom = graph[vertex];
       const str = currentRoom.coordinates;
       const x = str.split(",")[0].slice(1);
       const y = str.split(",")[1].slice(0, -1);
@@ -17,6 +17,7 @@ const MapView = ({ room }) => {
       const roomToolTip = `
         <h2>${currentRoom.title}</h2>
         <p>${currentRoom.description}</p>
+        ${currentRoom.room_id === room.room_id && `<h3>YOU ARE HERE</h3>`}
         `;
 
       rooms.push(
@@ -57,13 +58,18 @@ const MapView = ({ room }) => {
               data-html={true}
               style={{
                 backgroundColor: `${
-                  currentRoom.title.includes("A misty room")
+                  currentRoom.room_id === room.room_id
+                    ? "green"
+                    : currentRoom.title.includes("A misty room")
                     ? "coral"
                     : currentRoom.title.includes("Mt. Holloway")
                     ? "firebrick"
                     : currentRoom.title.includes("A Dark Cave")
                     ? "darkgrey"
                     : "#FFD233"
+                }`,
+                color: `${
+                  currentRoom.room_id === room.room_id ? "white" : "black"
                 }`
               }}
             >
@@ -97,6 +103,7 @@ const MapView = ({ room }) => {
     }
     return rooms;
   };
+  console.log("room.room_id: ", room.room_id);
 
   return (
     <div className="map-view-container">

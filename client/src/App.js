@@ -56,13 +56,18 @@ function App() {
           />
         </div>
       )}
-
-      <TopBar player={playerInfo} />
-      <div className="middle">
-        <SideBar player={playerInfo} room={roomInfo} />
-        <MapView room={roomInfo} />
-      </div>
-      <BottomBar />
+      {roomInfo && playerInfo ? (
+        <>
+          <TopBar player={playerInfo} />
+          <div className="middle">
+            <SideBar player={playerInfo} room={roomInfo} />
+            <MapView room={roomInfo} />
+          </div>
+          <BottomBar />
+        </>
+      ) : (
+        "loading..."
+      )}
     </div>
   );
 }
