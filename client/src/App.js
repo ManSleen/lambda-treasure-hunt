@@ -62,7 +62,11 @@ function App() {
           <TopBar player={playerInfo} />
           <div className="middle">
             <SideBar player={playerInfo} room={roomInfo} />
-            <MapView setRoomInfo={setRoomInfo} room={roomInfo} />
+            <MapView
+              setLoading={setLoading}
+              setRoomInfo={setRoomInfo}
+              room={roomInfo}
+            />
           </div>
           <BottomBar />
         </>
