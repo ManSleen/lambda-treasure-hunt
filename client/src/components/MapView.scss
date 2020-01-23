@@ -2,6 +2,7 @@
   background: #d9d6d6;
   width: 100%;
   position: relative;
+  right: 0;
   padding: 0 0 2100px 0;
   box-sizing: border-box;
   .map-child {
@@ -32,4 +33,13 @@
       }
     }
   }
+}
+
+.rc-tooltip {
+  z-index: 99999;
+  position: fixed;
+}
+.rc-slider-tooltip {
+  z-index: 99999;
+  position: fixed;
 }
