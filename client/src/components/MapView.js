@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ReactTooltip from "react-tooltip";
 import { axiosWithAuth } from "../util/axiosWithAuth.js";
 
@@ -6,12 +6,18 @@ import map from "../map/map.json";
 import "./MapView.scss";
 
 const MapView = ({ room, setRoomInfo, setLoading }) => {
+  const [destination, setDestination] = useState();
+
   useEffect(() => {
     console.log("room.room_id: ", room.room_id);
+    if (destination && destination.room_id !== room.room_id) {
+      travelToRoom(destination);
+    }
   }, [room]);
 
   const handleClick = (e, destinationRoom) => {
     e.preventDefault();
+    setDestination(destinationRoom);
     console.log("destinationRoom: ", destinationRoom);
     travelToRoom(destinationRoom);
   };
