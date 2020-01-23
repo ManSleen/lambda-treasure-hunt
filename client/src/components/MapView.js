@@ -7,11 +7,20 @@ import "./MapView.scss";
 
 const MapView = ({ room, setRoomInfo, setLoading }) => {
   const [destination, setDestination] = useState();
+  const [atShrine, setAtShrine] = useState(false);
 
   useEffect(() => {
+    const shrines = [461, 499, 374, 22];
+    const shrinesSet = new Set(shrines);
     console.log("room.room_id: ", room.room_id);
     if (destination && destination.room_id !== room.room_id) {
       travelToRoom(destination);
+    }
+    if (shrinesSet.has(room.room_id)) {
+      console.log("You've arrived at a shrine, Would you like to pray here?");
+      setAtShrine(true);
+    } else {
+      setAtShrine(false);
     }
   }, [room]);
 
@@ -226,6 +235,29 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
 
   return (
     <div className="map-view-container">
+      {atShrine && (
+        <div
+          style={{
+            position: "fixed",
+            top: "86px",
+            right: 0,
+            width: "100vw",
+            height: "50px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            background: "#DA5D17",
+            boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.15)",
+            zIndex: 999,
+            color: "white"
+          }}
+        >
+          <p>
+            You've arrived at a shrine, Would you like to{" "}
+            <span className="pray-span">pray</span> here?
+          </p>
+        </div>
+      )}
       {generateMap(map)}
       <ReactTooltip />
     </div>

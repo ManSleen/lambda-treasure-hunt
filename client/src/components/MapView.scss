@@ -35,11 +35,9 @@
   }
 }
 
-.rc-tooltip {
-  z-index: 99999;
-  position: fixed;
-}
-.rc-slider-tooltip {
-  z-index: 99999;
-  position: fixed;
+.pray-span {
+  text-decoration: underline;
+  text-transform: uppercase;
+  font-weight: 900;
+  cursor: pointer;
 }
