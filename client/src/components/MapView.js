@@ -155,6 +155,7 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
 
       rooms.push(
         <div
+          key={currentRoom.room_id}
           className="map-child"
           style={{
             bottom: `${(y - 45) * 65}px`,

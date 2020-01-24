@@ -8,13 +8,13 @@ const Wearables = () => {
     <div className="wearables-container">
       <div className="upper-body child">
         <div>
-          <img src={upperBody} alt-="" />
+          <img src={upperBody} alt="" />
           <p>terrible jacket</p>
         </div>
       </div>
       <div className="lower-body child">
         <div>
-          <img src={lowerBody} alt-="" />
+          <img src={lowerBody} alt="" />
           <p>nice boots</p>
         </div>
       </div>
