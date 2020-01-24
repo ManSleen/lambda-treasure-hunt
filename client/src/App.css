@@ -63,10 +63,6 @@ a img {
   margin: 0 auto;
 }
 
-a:hover {
-  transform: scale(1.1);
-}
-
 .loader-container {
   width: 100vw;
   height: 100vh;

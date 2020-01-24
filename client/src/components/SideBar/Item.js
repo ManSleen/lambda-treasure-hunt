@@ -1,13 +1,13 @@
 import React from "react";
 
-const Item = ({ item }) => {
+const Item = ({ item, type }) => {
   return (
     <div className="item-container">
       <div>
         <p>{item && item}</p>
       </div>
       <div>
-        <button>take</button>
+        {type === "room_item" ? <button>take</button> : <button>drop</button>}
         <button>examine</button>
       </div>
     </div>

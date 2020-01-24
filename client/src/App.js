@@ -68,7 +68,7 @@ function App() {
               room={roomInfo}
             />
           </div>
-          <BottomBar />
+          <BottomBar player={playerInfo} />
         </>
       ) : (
         "loading..."

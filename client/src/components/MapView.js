@@ -263,11 +263,12 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
             <span onClick={() => pray()} className="pray-span">
               pray
             </span>{" "}
-            here?
+            here? <span style={{ fontSize: "1.2rem" }}>🙏</span>
           </p>
         </div>
       )}
       {generateMap(map)}
+
       <ReactTooltip />
     </div>
   );
