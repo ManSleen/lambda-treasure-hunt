@@ -17,7 +17,7 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
       travelToRoom(destination);
     }
     if (shrinesSet.has(room.room_id)) {
-      console.log("You've arrived at a shrine, Would you like to pray here?");
+      console.log("You've arrived at a shrine. Would you like to pray here?");
       setAtShrine(true);
     } else {
       setAtShrine(false);
@@ -246,14 +246,14 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            background: "#DA5D17",
+            background: "#06D01ACC",
             boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.15)",
             zIndex: 999,
             color: "white"
           }}
         >
           <p>
-            You've arrived at a shrine, Would you like to{" "}
+            You've arrived at a shrine. Would you like to{" "}
             <span className="pray-span">pray</span> here?
           </p>
         </div>
