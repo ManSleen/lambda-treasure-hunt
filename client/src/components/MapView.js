@@ -31,6 +31,12 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
     travelToRoom(destinationRoom);
   };
 
+  const pray = async () => {
+    const res = await axiosWithAuth().post("adv/pray/", {});
+    const prayRes = res.data;
+    setRoomInfo(prayRes);
+  };
+
   const travelToRoom = async destinationRoom => {
     setLoading(true);
     const delay = seconds =>
@@ -246,7 +252,7 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            background: "#06D01ACC",
+            background: "green",
             boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.15)",
             zIndex: 999,
             color: "white"
@@ -254,7 +260,10 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
         >
           <p>
             You've arrived at a shrine. Would you like to{" "}
-            <span className="pray-span">pray</span> here?
+            <span onClick={() => pray()} className="pray-span">
+              pray
+            </span>{" "}
+            here?
           </p>
         </div>
       )}
