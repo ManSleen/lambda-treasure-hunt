@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { axiosWithAuth } from "./util/axiosWithAuth";
-import map from "./map/map.json";
 
 import "./App.css";
 
@@ -68,7 +67,7 @@ function App() {
               room={roomInfo}
             />
           </div>
-          <BottomBar />
+          <BottomBar player={playerInfo} />
         </>
       ) : (
         "loading..."

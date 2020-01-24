@@ -22,8 +22,32 @@
     display: flex;
     flex-flow: column nowrap;
     margin-right: 50px;
+    &:hover {
+      transform: scale(1.1);
+      cursor: pointer;
+    }
     img {
       margin-bottom: 8px;
     }
+  }
+}
+.popup {
+  position: fixed;
+  bottom: 120px;
+  width: 25vw;
+  z-index: 9999999;
+  background-color: black;
+  padding: 50px;
+  box-sizing: border-box;
+}
+
+.inventory-container {
+  left: 0;
+}
+
+.abilities-container {
+  right: 0;
+  h2 {
+    margin-bottom: 6px;
   }
 }

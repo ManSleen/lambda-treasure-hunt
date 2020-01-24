@@ -155,6 +155,7 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
 
       rooms.push(
         <div
+          key={currentRoom.room_id}
           className="map-child"
           style={{
             bottom: `${(y - 45) * 65}px`,
@@ -263,11 +264,12 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
             <span onClick={() => pray()} className="pray-span">
               pray
             </span>{" "}
-            here?
+            here? <span style={{ fontSize: "1.2rem" }}>🙏</span>
           </p>
         </div>
       )}
       {generateMap(map)}
+
       <ReactTooltip />
     </div>
   );

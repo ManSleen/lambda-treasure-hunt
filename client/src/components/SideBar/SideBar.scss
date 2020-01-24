@@ -44,13 +44,18 @@
       height: 100%;
       width: 49.5%;
       text-align: center;
-      align-self: center;
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: center;
+      cursor: pointer;
 
       p {
         font-weight: 500;
         font-size: 11px;
         line-height: 12px;
         color: #e8e8e8;
+        margin: 5px 0 0 0;
+        padding: 0;
       }
     }
   }

@@ -8,7 +8,9 @@ const RoomItems = ({ room }) => {
       <h3>Room items</h3>
       {room ? (
         room.items.length > 0 ? (
-          room.items.map(item => <Item item={item} />)
+          room.items.map(item => (
+            <Item key={item} type="room_item" item={item} />
+          ))
         ) : (
           <p>There are no items in this room</p>
         )

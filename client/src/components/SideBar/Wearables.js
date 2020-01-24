@@ -7,12 +7,16 @@ const Wearables = () => {
   return (
     <div className="wearables-container">
       <div className="upper-body child">
-        <img src={upperBody} alt-="" />
-        <p>terrible jacket</p>
+        <div>
+          <img src={upperBody} alt="" />
+          <p>terrible jacket</p>
+        </div>
       </div>
       <div className="lower-body child">
-        <img src={lowerBody} alt-="" />
-        <p>nice boots</p>
+        <div>
+          <img src={lowerBody} alt="" />
+          <p>nice boots</p>
+        </div>
       </div>
     </div>
   );

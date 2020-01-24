@@ -5,8 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "axios": "^0.19.1",
-    "node-localstorage": "^2.1.5",
-    "serialize-javascript": "^2.1.2"
+    "node-localstorage": "^2.1.5"
   },
   "devDependencies": {},
   "scripts": {
