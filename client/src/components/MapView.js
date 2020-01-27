@@ -120,7 +120,7 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
       await delay(currentRoom.cooldown);
       const dashObj = {
         direction: directionString,
-        num_rooms: numRooms,
+        num_rooms: numRooms.toString(),
         next_room_ids: nextRoomIds
       };
       const res = await axiosWithAuth().post("adv/dash/", dashObj);
@@ -167,13 +167,34 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
     let path = findShortestPathToRoom(room, map, destinationRoom);
     console.log("path: ", path);
     let canMoveMultipleRooms = false;
-    for (let i = 0; i < path.length; i++) {
-      console.log(path[i]);
+    let multipleRooms = [path[0].room];
+
+    for (let i = 1; i < path.length; i++) {
+      let item = path[i];
+      if (item.direction === path[0].direction) {
+        multipleRooms.push(path[i].room.toString());
+        canMoveMultipleRooms = true;
+      } else {
+        break;
+      }
     }
+    let numRooms = multipleRooms.length;
+    let nextRoomIds = multipleRooms.join(",");
     let nextDirection = path[0].direction;
-    const newRoom = await move(nextDirection, room, map);
-    setRoomInfo(newRoom);
-    setLoading(false);
+
+    console.log("numRooms:::", numRooms);
+    console.log("nextRoomIds:::", nextRoomIds);
+    console.log("nextDirection:::", nextDirection);
+
+    if (canMoveMultipleRooms) {
+      const newRoom = await dash(room, nextDirection, numRooms, nextRoomIds);
+      setRoomInfo(newRoom);
+      setLoading(false);
+    } else {
+      const newRoom = await move(nextDirection, room, map);
+      setRoomInfo(newRoom);
+      setLoading(false);
+    }
   };
 
   const generateMap = graph => {
