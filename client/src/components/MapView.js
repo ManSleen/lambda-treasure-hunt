@@ -82,13 +82,20 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
             for (let i = 0; i < currentPath.length - 1; i++) {
               let currentRoom = currentPath[i];
               let nextRoom = currentPath[i + 1];
-              directionsPath.push(
-                findNextDirection(
-                  currentRoom.room_id,
-                  visited,
-                  nextRoom.room_id
-                )
+              const nextDirection = findNextDirection(
+                currentRoom.room_id,
+                visited,
+                nextRoom.room_id
               );
+              const roomInNextDirection = findNextRoom(
+                currentRoom.room_id,
+                visited,
+                nextDirection
+              );
+              directionsPath.push({
+                direction: nextDirection,
+                room: roomInNextDirection
+              });
             }
             return directionsPath;
           }
@@ -102,6 +109,23 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
           }
         }
       }
+    };
+
+    const dash = async (
+      currentRoom,
+      directionString,
+      numRooms,
+      nextRoomIds
+    ) => {
+      await delay(currentRoom.cooldown);
+      const dashObj = {
+        direction: directionString,
+        num_rooms: numRooms,
+        next_room_ids: nextRoomIds
+      };
+      const res = await axiosWithAuth().post("adv/dash/", dashObj);
+      const newRoom = res.data;
+      return newRoom;
     };
 
     const move = async (directionString, currentRoom, refMap) => {
@@ -121,7 +145,10 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
       }
 
       try {
-        if (currentRoom.terrain === "NORMAL") {
+        if (
+          currentRoom.terrain === "NORMAL" ||
+          currentRoom.terrain === "CAVE"
+        ) {
           const res = await axiosWithAuth().post("adv/move/", dirObj);
           const newRoom = res.data;
           return newRoom;
@@ -139,7 +166,11 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
 
     let path = findShortestPathToRoom(room, map, destinationRoom);
     console.log("path: ", path);
-    let nextDirection = path[0];
+    let canMoveMultipleRooms = false;
+    for (let i = 0; i < path.length; i++) {
+      console.log(path[i]);
+    }
+    let nextDirection = path[0].direction;
     const newRoom = await move(nextDirection, room, map);
     setRoomInfo(newRoom);
     setLoading(false);
