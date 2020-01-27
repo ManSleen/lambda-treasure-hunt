@@ -121,9 +121,15 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
       }
 
       try {
-        const res = await axiosWithAuth().post("adv/move/", dirObj);
-        const newRoom = res.data;
-        return newRoom;
+        if (currentRoom.terrain === "NORMAL") {
+          const res = await axiosWithAuth().post("adv/move/", dirObj);
+          const newRoom = res.data;
+          return newRoom;
+        } else if (currentRoom.terrain === "MOUNTAIN") {
+          const res = await axiosWithAuth().post("adv/fly/", dirObj);
+          const newRoom = res.data;
+          return newRoom;
+        }
       } catch (error) {
         console.log(error);
       }
@@ -132,6 +138,7 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
     console.log("destinationRoom.room_id: ", destinationRoom.room_id);
 
     let path = findShortestPathToRoom(room, map, destinationRoom);
+    console.log("path: ", path);
     let nextDirection = path[0];
     const newRoom = await move(nextDirection, room, map);
     setRoomInfo(newRoom);
@@ -253,7 +260,7 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            background: "green",
+            background: "darkorange",
             boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.15)",
             zIndex: 999,
             color: "white"
@@ -266,6 +273,28 @@ const MapView = ({ room, setRoomInfo, setLoading }) => {
             </span>{" "}
             here? <span style={{ fontSize: "1.2rem" }}>🙏</span>
           </p>
+        </div>
+      )}
+      {room.messages.length > 0 && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: "120px",
+            right: 0,
+            width: "100vw",
+            height: "50px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            background: "green",
+            boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.15)",
+            zIndex: 999,
+            color: "white"
+          }}
+        >
+          {room.messages.map(message => (
+            <p style={{ marginRight: "8px" }}>{message}</p>
+          ))}
         </div>
       )}
       {generateMap(map)}

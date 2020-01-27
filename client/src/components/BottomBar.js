@@ -7,7 +7,7 @@ import warp from "../images/warp.svg";
 import dna from "../images/dna.svg";
 import Item from "./SideBar/Item";
 
-const BottomBar = ({ player }) => {
+const BottomBar = ({ player, room, sellItem }) => {
   const [clickedInventory, setClickedInventory] = useState(false);
   const [clickedAbilities, setClickedAbilities] = useState(false);
 
@@ -25,7 +25,14 @@ const BottomBar = ({ player }) => {
       {clickedInventory && (
         <div className="inventory-container popup">
           {player && player.inventory.length > 0
-            ? player.inventory.map(item => <Item item={item}></Item>)
+            ? player.inventory.map(item => (
+                <Item
+                  sellItem={sellItem}
+                  type="inventory_item"
+                  room={room}
+                  item={item}
+                ></Item>
+              ))
             : "No items in inventory"}
         </div>
       )}
