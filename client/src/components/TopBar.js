@@ -11,7 +11,7 @@ const TopBar = ({ player }) => {
           <h2>{player ? player.name : "loading..."}</h2>
         </div>
         <div className="topbar-title">
-          <h1>LAMBDA TREASURE HUNT</h1>
+          <h1>☠️ LAMBDA TREASURE HUNT</h1>
         </div>
         <div className="topbar-gold">
           {player ? (
