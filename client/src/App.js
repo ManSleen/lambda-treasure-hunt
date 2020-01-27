@@ -40,6 +40,33 @@ function App() {
     init();
   }, []);
 
+  const delay = seconds =>
+    new Promise(resolver => setTimeout(() => resolver(), seconds * 1000));
+
+  const takeItem = async itemName => {
+    setLoading(true);
+    await delay(roomInfo.cooldown);
+    const itemObj = { name: itemName };
+    const res = await axiosWithAuth().post("adv/take/", itemObj);
+    setRoomInfo(res.data);
+    await delay(8);
+    const playerRes = await axiosWithAuth().post("adv/status/", {});
+    setPlayerInfo(playerRes.data);
+    setLoading(false);
+  };
+
+  const sellItem = async itemName => {
+    setLoading(true);
+    await delay(roomInfo.cooldown);
+    const itemObj = { name: itemName, confirm: "yes" };
+    const res = await axiosWithAuth().post("adv/sell/", itemObj);
+    setRoomInfo(res.data);
+    await delay(3);
+    const playerRes = await axiosWithAuth().post("adv/status/", {});
+    setPlayerInfo(playerRes.data);
+    setLoading(false);
+  };
+
   if (!loading) {
     console.log("roomInfo: ", roomInfo, "playerInfo: ", playerInfo);
   }
@@ -60,14 +87,19 @@ function App() {
         <>
           <TopBar player={playerInfo} />
           <div className="middle">
-            <SideBar player={playerInfo} room={roomInfo} />
+            <SideBar takeItem={takeItem} player={playerInfo} room={roomInfo} />
             <MapView
               setLoading={setLoading}
               setRoomInfo={setRoomInfo}
               room={roomInfo}
             />
           </div>
-          <BottomBar player={playerInfo} />
+          <BottomBar
+            sellItem={sellItem}
+            room={roomInfo}
+            player={playerInfo}
+            setPlayerInfo={setPlayerInfo}
+          />
         </>
       ) : (
         "loading..."

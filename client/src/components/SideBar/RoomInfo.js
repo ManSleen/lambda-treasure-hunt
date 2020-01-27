@@ -1,7 +1,7 @@
 import React from "react";
 import RoomItems from "./RoomItems";
 
-const RoomInfo = ({ room }) => {
+const RoomInfo = ({ room, takeItem }) => {
   return (
     <div className="room-info-container">
       <div className="room-title">
@@ -33,7 +33,7 @@ const RoomInfo = ({ room }) => {
         </div>
       </div>
       <hr />
-      <RoomItems room={room} />
+      <RoomItems takeItem={takeItem} room={room} />
     </div>
   );
 };
