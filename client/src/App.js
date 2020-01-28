@@ -55,6 +55,18 @@ function App() {
     setLoading(false);
   };
 
+  const dropItem = async itemName => {
+    setLoading(true);
+    await delay(roomInfo.cooldown);
+    const itemObj = { name: itemName };
+    const res = await axiosWithAuth().post("adv/drop/", itemObj);
+    setRoomInfo(res.data);
+    await delay(8);
+    const playerRes = await axiosWithAuth().post("adv/status/", {});
+    setPlayerInfo(playerRes.data);
+    setLoading(false);
+  };
+
   const sellItem = async itemName => {
     setLoading(true);
     await delay(roomInfo.cooldown);
@@ -87,7 +99,12 @@ function App() {
         <>
           <TopBar player={playerInfo} />
           <div className="middle">
-            <SideBar takeItem={takeItem} player={playerInfo} room={roomInfo} />
+            <SideBar
+              dropItem={dropItem}
+              takeItem={takeItem}
+              player={playerInfo}
+              room={roomInfo}
+            />
             <MapView
               setLoading={setLoading}
               setRoomInfo={setRoomInfo}
@@ -95,6 +112,7 @@ function App() {
             />
           </div>
           <BottomBar
+            dropItem={dropItem}
             sellItem={sellItem}
             room={roomInfo}
             player={playerInfo}
