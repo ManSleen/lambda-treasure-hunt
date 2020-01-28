@@ -1,6 +1,6 @@
 import React from "react";
 
-const Item = ({ item, type, takeItem, room, sellItem }) => {
+const Item = ({ item, type, takeItem, room, sellItem, dropItem }) => {
   return (
     <div className="item-container">
       <div>
@@ -10,16 +10,10 @@ const Item = ({ item, type, takeItem, room, sellItem }) => {
         {type === "room_item" ? (
           <button onClick={() => takeItem(item)}>take</button>
         ) : (
-          <button>drop</button>
+          <button onClick={() => dropItem(item)}>drop</button>
         )}
         {type === "inventory_item" && room.room_id === 1 ? (
-          <button
-            onClick={() => {
-              sellItem(item);
-            }}
-          >
-            sell
-          </button>
+          <button onClick={() => sellItem(item)}>sell</button>
         ) : (
           <button>examine</button>
         )}
